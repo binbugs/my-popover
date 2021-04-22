@@ -1,6 +1,7 @@
 # my-popover
 
 原生js+vue popover组件
+在线演示：https://binbugs.github.io/my-popover/my-popover.html
 
 - 实现点击显示popover框，点击外部关闭
 - popover框跟随button居中定位
