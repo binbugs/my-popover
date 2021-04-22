@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- text为按钮内文本 position控制popover框出现位置 通过设置id+css控制组件位置  -->
+        <!-- dt为popover框标题内容  dd为列表内容 -->
+        <my-component text="TL" position="top" id="TL">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="Top" position="top" id="Top">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="TR" position="top" id="TR">
+            <dt>选项1111111111111111111111</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="LT" position="left" id="LT">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="Left" position="left" id="Left">
+            <dt>选项1111111111111111111111111111111111</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="LB" position="left" id="LB">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="BL" position="bottom" id="BL">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="Bottom" position="bottom" id="Bottom">
+            <dt>选项1111111111111111111111111111111111</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="BR" position="bottom" id="BR">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="RT" position="right" id="RT">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="Right" position="right" id="Right">
+            <dt>选项1111111111111111111111111111111111</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+        </my-component>
+        <my-component text="RB" position="right" id="RB">
+            <dt>选项</dt>
+            <dd>选项2</dd>
+            <dd>选项3</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+            <dd>选项4</dd>
+        </my-component>
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+        Vue.component('my-component', {
+            name: 'PopOver',
+            props: ['text', 'position'],
+            data() {
+                return {
+                    open: false,
+                }
+            },
+            template: `
+            <div class="pop-over">
+                <a @click="toggleOpen" ref="button" class="pop-button" href="javascript: void(0);">
+                    {{text}}
+                </a>
+                <dl v-clickoutside="close" v-show="open" ref="popover" class="top">
+                    <slot></slot>
+                    <div class="popover-common"></div>
+                </dl>
+            </div>
+            `,
+            methods: {
+                // 被点击时切换v-show状态
+                toggleOpen: function() {
+                    this.open = !this.open;
+                },
+                close: function(e) {
+                    if (this.$el.contains(e.target)) return;
+                    this.open = false;
+                }
+            },
+            updated() {
+                if (this.open == true) {
+                    this.$refs.popover.className = this.position;
+                    this.$refs.button.className = "pop-button current-button";
+                    let pos = this.$refs.button.getBoundingClientRect();
+                    let pop = this.$refs.popover;
+                    //让popover框与button居中对齐
+                    if (this.position == "top") {
+                        pop.style.left = pos.x - (pop.offsetWidth / 2) + (pos.width / 2) + 'px';
+                        pop.style.top = pos.y - pop.offsetHeight - pos.height + 'px';
+                    } else if (this.position == "bottom") {
+                        pop.style.left = pos.x - (pop.offsetWidth / 2) + (pos.width / 2) + 'px';
+                        pop.style.top = pos.y + pos.height + 5 + 'px';
+                    } else if (this.position == "left") {
+                        pop.style.left = pos.x - pop.offsetWidth - 15 + 'px';
+                        pop.style.top = pos.y - (pop.offsetHeight / 2) + (pos.height / 2) - 8 + 'px';
+                    } else if (this.position == "right") {
+                        pop.style.left = pos.x + pos.width + 15 + 'px';
+                        pop.style.top = pos.y - (pop.offsetHeight / 2) + (pos.height / 2) - 8 + 'px';
+                    }
+                } else {
+                    this.$refs.button.className = "pop-button";
+                }
+            },
+            //点击popover外部时关闭popover窗口
+            directives: {
+                clickoutside: {
+                    bind: function(el, binding, vnode) {
+                        const documentHandler = function(e) {
+                            if (!vnode.context || el.contains(e.target)) return;
+                            binding.value(e);
+                        };
+                        setTimeout(() => {
+                            document.addEventListener('click', documentHandler);
+                        }, 0);
+                    }
+                }
+            }
+        })
+        var vm = new Vue({
+            el: '#app',
+            data: {}
+        });
+    </script>
+</body>
+<style scoped>
+    #app {
+        position: absolute;
+        left: 300px;
+        top: 100px
+    }
+    
+    #TL {
+        position: absolute;
+        top: 150px;
+        left: 300px;
+    }
+    
+    #Top {
+        position: absolute;
+        top: 150px;
+        left: 400px;
+    }
+    
+    #TR {
+        position: absolute;
+        top: 150px;
+        left: 500px;
+    }
+    
+    #LT {
+        position: absolute;
+        top: 200px;
+        left: 200px;
+    }
+    
+    #Left {
+        position: absolute;
+        top: 250px;
+        left: 200px;
+    }
+    
+    #LB {
+        position: absolute;
+        top: 300px;
+        left: 200px;
+    }
+    
+    #BL {
+        position: absolute;
+        top: 350px;
+        left: 300px;
+    }
+    
+    #Bottom {
+        position: absolute;
+        top: 350px;
+        left: 400px;
+    }
+    
+    #BR {
+        position: absolute;
+        top: 350px;
+        left: 500px;
+    }
+    
+    #RB {
+        position: absolute;
+        top: 300px;
+        left: 600px;
+    }
+    
+    #Right {
+        position: absolute;
+        top: 250px;
+        left: 600px;
+    }
+    
+    #RT {
+        position: absolute;
+        top: 200px;
+        left: 600px;
+    }
+    
+    .pop-over {
+        display: table;
+        position: relative;
+    }
+    
+    .pop-box {
+        width: 100px;
+        height: 100px;
+        background-color: pink;
+    }
+    
+    .pop-button {
+        position: relative;
+        display: block;
+        width: 70px;
+        height: 30px;
+        text-decoration: none;
+        color: rgb(37, 37, 37);
+        margin: 0 auto;
+        border: solid 2px rgb(217, 217, 217);
+        border-radius: 3px;
+        background-color: #fff;
+        line-height: 30px;
+        text-align: center;
+        font-weight: 600;
+    }
+    
+    .current-button {
+        border-color: rgb(92, 169, 248);
+        color: rgb(92, 169, 248);
+    }
+    
+    .pop-over dt {
+        display: block;
+        padding: 10px;
+        border-bottom: 1px solid rgb(240, 240, 240);
+    }
+    
+    .pop-over :nth-child(2) {
+        margin-top: 10px;
+    }
+    
+    .pop-over dd {
+        padding-left: 10px;
+    }
+    
+    .pop-over dl dd {
+        margin: 0;
+    }
+    
+    .left,
+    .top,
+    .bottom,
+    .right {
+        border-radius: 6px;
+        display: table;
+        position: fixed;
+        background-color: white;
+        box-shadow: 0 0 50px rgba(0, 0, 0, .1);
+        /* 设置popover框最小宽度，且宽度可被内容撑开 */
+        min-width: 150px;
+        margin: 10px auto;
+        z-index: 1000;
+        padding-bottom: 10px;
+    }
+    
+    .popover-common {
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        border-radius: 2px;
+        box-shadow: 0 0 50px rgba(0, 0, 0, .1);
+        background-color: #fff;
+        transform: rotate(45deg);
+        z-index: -100;
+    }
+    
+    .right .popover-common {
+        left: -5px;
+        top: 50%;
+        margin-top: -12.5px;
+    }
+    
+    .left .popover-common {
+        left: 100%;
+        top: 50%;
+        margin-top: -12.5px;
+        margin-left: -20px;
+    }
+    
+    .bottom .popover-common {
+        top: -5px;
+        left: 50%;
+        margin-left: -12.5px;
+    }
+    
+    .top .popover-common {
+        top: 100%;
+        left: 50%;
+        margin-left: -12.5px;
+        margin-top: -20px;
+    }
+</style>
+
+</html>
